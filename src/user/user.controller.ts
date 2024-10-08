@@ -227,4 +227,43 @@ export class UserController {
   //     }, 1000);
   //   });
   // }
+  @UseGuards(JwtAuthGuardValidate)
+  @Get('useraccount/:userId')
+  async getUserAccount(@Param('userId', ParseIntPipe) userId: number) {
+    const users = await this.userService.getUserById(userId);
+    if (users) {
+      const {
+        streetAddress1,
+        streetAddress2,
+        city,
+        state,
+        stateCode,
+        pinCode,
+        zipCode,
+        country,
+        countryCode,
+        ...user
+      } = users;
+      const address = {
+        streetAddress1,
+        streetAddress2,
+        city,
+        state,
+        stateCode,
+        pinCode,
+        zipCode,
+        country,
+        countryCode,
+      };
+      const userById = { ...user, address };
+      return new Promise((resolve, reject) => {
+        setTimeout(() => {
+          if (user) {
+            resolve({ userById, isSuccess: true });
+          }
+          reject({ error });
+        }, 2000);
+      });
+    }
+  }
 }

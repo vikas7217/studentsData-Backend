@@ -16,13 +16,14 @@ export class MailerService {
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
   ) {
+    console.log('transObject', process.env.SMTP_HOST);
     this.transport = nodemailer.createTransport({
-      host: 'smtp.gmail.com',
-      port: 465,
+      host: process.env.SMTP_HOST,
+      port: parseInt(process.env.PORT),
       secure: true,
       auth: {
-        user: 'pvk2240@gmail.com',
-        pass: 'gemg jiyj lgqb ceja',
+        user: process.env.SMTP_USER,
+        pass: process.env.PASSKEY,
       },
     });
   }
@@ -49,7 +50,7 @@ export class MailerService {
       }
       const generateOtp = otp || this.createOTP();
       const newMail = {
-        from: 'pvk2240@gmail.com',
+        from: process.env.SMTP_USER,
         to: sendTo,
         subject: subject,
         text:

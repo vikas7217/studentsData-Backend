@@ -37,7 +37,7 @@ export class UserService {
   //     const isUserEmailExist = await this.usersRepository.findOne({
   //       where: { email: email },
   //     });
-  //    
+  //
   //     if (isUserIdExist) {
   //       return {
   //         isSuccess: false,
