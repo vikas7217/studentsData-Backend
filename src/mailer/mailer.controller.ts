@@ -15,6 +15,7 @@ import { ChangePasswordDto } from 'src/dto/change.password.dto';
 import { JwtAuthGuardValidate } from 'src/auth-guard/jwt-authValidateToken.guard';
 import { ValidateOtpDto } from 'src/dto/validate-otp';
 import { ForgotPasswordDto } from 'src/dto/forgot-password.dto';
+import { Public } from 'src/auth-guard/public_auth.guard';
 
 @Controller('login')
 export class MailerController {
@@ -108,6 +109,7 @@ export class MailerController {
   }
 
   @Get('validate/:email')
+  @Public()
   async validateEmail(@Param('email') email: string): Promise<any> {
     const validate = await this.mailerServicer.findUserEmail(email);
     const password = validate?.password || '';
