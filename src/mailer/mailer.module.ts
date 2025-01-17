@@ -4,7 +4,7 @@ import { userModule } from 'src/user/user.module';
 import { AuthenticationModule } from 'src/authentication/authentication.module';
 import { MailerController } from './mailer.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { UserEntity } from 'src/user/entity/user.entity';
+import { UserEntity } from 'src/entity/user.entity';
 
 @Module({
   controllers: [MailerController],

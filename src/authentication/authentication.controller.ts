@@ -7,20 +7,16 @@ import {
   Request,
   UseGuards,
 } from '@nestjs/common';
-// import { UserService } from 'src/user/user.service';
 import { AuthenticationService } from './authentication.service';
-// import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from '../auth-guard/jwt.auth.guard';
-// import { JwtAuthGuardValidate } from 'src/auth-guard/jwt-authValidateToken.guard';
-// import { ChangePasswordDto } from 'src/dto/change.password.dto';
-// import { ChangePasswordDto } from '../dto/change.password.dto';
-// import { JwtAuthGuardValidate } from '../auth-guard/jwt-authValidateToken.guard';
+import { Public } from 'src/auth-guard/public_auth.guard';
 @Controller('/auth')
 export class AuthenticationController {
   constructor(private authenticationServicer: AuthenticationService) {}
   @UseGuards(JwtAuthGuard)
   @Post('/login')
-  async authLogs(@Request() req: any) {
+  @Public()
+  public async authLogs(@Request() req: any) {
     const user = await this.authenticationServicer.singIn(req.user);
     return new Promise((resolve) => {
       setTimeout(() => {

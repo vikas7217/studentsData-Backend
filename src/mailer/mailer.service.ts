@@ -2,7 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 // import { from } from 'form-data';
 import * as nodemailer from 'nodemailer';
-import { UserEntity } from 'src/user/entity/user.entity';
+import { UserEntity } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
 
 @Injectable()
@@ -16,7 +16,7 @@ export class MailerService {
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
   ) {
-    console.log('transObject', process.env.SMTP_HOST);
+    // console.log('transObject', process.env.SMTP_HOST);
     this.transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.PORT),
