@@ -4,6 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import * as nodemailer from 'nodemailer';
 import { UserEntity } from 'src/entity/user.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
+import { UserLoginEntity } from 'src/entity/user.login.entity';
 
 @Injectable()
 export class MailerService {
@@ -15,8 +17,9 @@ export class MailerService {
   constructor(
     @InjectRepository(UserEntity)
     private usersRepository: Repository<UserEntity>,
+    @InjectRepository(UserLoginEntity)
+     private userLoginRepo: Repository<UserLoginEntity>
   ) {
-    // console.log('transObject', process.env.SMTP_HOST);
     this.transport = nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.PORT),
@@ -34,12 +37,12 @@ export class MailerService {
     for (let i = 0; i < 4; i++) {
       OTP += Math.floor(Math.random() * 10);
     }
-    return OTP;
+     return OTP;
   }
 
   async sendMail(sendTo: string, subject: string, otp?: number): Promise<any> {
     const isEmailExist = await this.usersRepository.findOne({
-      where: { email: sendTo, isSuccess: true },
+      where: { email: sendTo, isActive: 1 },
     });
     try {
       if (!isEmailExist) {
@@ -57,12 +60,14 @@ export class MailerService {
           'your one time verification code is' + ' ' + generateOtp.toString(),
       };
 
-      this.transport.sendMail(newMail);
+    const mail = await this.transport.sendMail(newMail);
 
-      this.otpStorage.set(sendTo, {
+    const mails = await this.otpStorage.set(sendTo, {
         otp: generateOtp.toString(),
         createdAt: Date.now(),
       });
+
+      console.log(mail,'mail',mails,'mails')
 
       return { isSuccess: true, message: 'now you verify your otp' };
     } catch (error) {
@@ -93,9 +98,12 @@ export class MailerService {
   }
 
   async forgotPass(newPassword: string, conformPassword: string, email) {
-    const findUserEmail = await this.usersRepository.findOne({
+    const findUserEmail = await this.userLoginRepo.findOne({
       where: { email },
     });
+    const saltOrRounds = 10;
+
+    const isMatch = await bcrypt.compare(newPassword, findUserEmail.password);
 
     try {
       if (!findUserEmail) {
@@ -104,7 +112,7 @@ export class MailerService {
           message: `User with this email doesn't exist. Try again `,
         };
       }
-      if (findUserEmail.password === newPassword) {
+      if (isMatch) {
         return {
           isSuccess: false,
           message: ` This  Password is already taken by your current password. Please Change New Password.`,
@@ -123,9 +131,11 @@ export class MailerService {
         };
       }
 
-      findUserEmail.password = newPassword;
+      const hash = await bcrypt.hash(newPassword, saltOrRounds);
 
-      await this.usersRepository.save(findUserEmail);
+      findUserEmail.password = hash;
+
+      await this.userLoginRepo.save(findUserEmail);
 
       return {
         isSuccess: true,
@@ -144,13 +154,21 @@ export class MailerService {
     user: any,
     email,
   ) {
-    const findUserEmail = await this.usersRepository.findOne({
+    const findUserEmail = await this.userLoginRepo.findOne({
       where: { email: email },
     });
 
-    // const findUser = await this.usersRepository.findOne({
-    //   where: { id: user.id },
-    // });
+    const saltOrRounds = 10;
+
+    const isMatch = await bcrypt.compare(
+      currentPassword,
+      findUserEmail.password,
+    );
+
+    const isMatchUser = await bcrypt.compare(
+      newPassword,
+      findUserEmail.password,
+    );
 
     if (!findUserEmail) {
       throw new NotFoundException('User not found');
@@ -158,13 +176,13 @@ export class MailerService {
 
     // const { currentPassword, newPassword } = changePasswordDto;
 
-    if (findUserEmail.password !== currentPassword) {
+    if (!isMatch) {
       return {
         message: `Password doesn't match your current password. Try again.`,
       };
     }
 
-    if (findUserEmail.password === newPassword) {
+    if (isMatchUser) {
       return {
         message: ` This  Password is already taken by your current password. Please Change New Password.`,
       };
@@ -181,14 +199,14 @@ export class MailerService {
         message: `Conform Password doesn't match with your new password. Try again.`,
       };
     }
-
-    findUserEmail.password = newPassword;
+    const hash = await bcrypt.hash(newPassword, saltOrRounds);
+    findUserEmail.password = hash;
     await this.usersRepository.save(findUserEmail);
 
     return { isSuccess: true, message: 'Password changed successfully' };
   }
 
   findUserEmail(email: string) {
-    return this.usersRepository.findOne({ where: { email, isSuccess: true } });
+    return this.userLoginRepo.findOne({ where: { email, isActive: 1 } });
   }
 }

@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  // Get,
   Param,
   Post,
   Put,
@@ -30,7 +29,7 @@ export class MailerController {
       otp,
     );
     // return sendingMail;
-    return new Promise((resolve, reject) => {
+    const response = new Promise((resolve, reject) => {
       setTimeout(() => {
         if (sendingMail) {
           resolve(sendingMail);
@@ -39,6 +38,8 @@ export class MailerController {
         }
       }, 1000);
     });
+     console.log(response);
+    return response.then((response)=> {return response})
   }
 
   @Post('verified/:email')
