@@ -48,7 +48,6 @@ export class UploadFileService {
       const uploadedLogsData = result.flatMap((values) =>
         Object.values(values),
       );
-      console.log(uploadedLogsData, 'array==============');
       const userLogs = await this.userLogsRepository.save(uploadedLogsData);
       return userLogs;
     }
@@ -84,14 +83,8 @@ export class UploadFileService {
       raw: false,
       dateNF: 'dd-mm-yyyy',
     });
-    // console.log(
-    //   fileName,
-    //   'fileName================',
-    //   uploadedTime,
-    //   'uploadedTime=========',
-    // );
+
     for (fileData of jsonData) {
-      // console.log({ ...fileData, fileName }, '111111111111111================');
       detailArray = { ...fileData, fileName, uploadedTime };
       uploadedFileData.push(detailArray);
     }

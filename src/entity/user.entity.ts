@@ -1,3 +1,4 @@
+import { Nullable } from 'src/config/config.service';
 import { Column, Entity, PrimaryGeneratedColumn, Unique } from 'typeorm';
 
 @Entity()
@@ -7,85 +8,96 @@ export class UserEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  userName: string;
-
-  @Column()
-  roll: string;
-
-  @Column()
-  type: string;
-
-  @Column()
-  gender: string;
-
-  @Column()
-  password: string;
-
-  @Column()
-  age: string;
-
-  @Column()
-  email: string;
-
-  @Column()
-  phoneNumber: string;
+  @Column('varchar', {
+    nullable: true,
+  })
+  userName: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  firstName: string;
+  roll: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  lastName: string;
+  type: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  streetAddress1: string;
+  gender: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  streetAddress2: string;
+  age: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  city: string;
+  email: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  state: string;
+  phoneNumber: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  stateCode: string;
+  firstName: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  pinCode: string;
+  lastName: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  zipCode: string;
+  streetAddress1: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  country: string;
+  streetAddress2: Nullable<string>;
 
   @Column('varchar', {
     nullable: true,
   })
-  countryCode: string;
+  city: Nullable<string>;
 
-  @Column({ default: true })
-  isSuccess: boolean;
+  @Column('varchar', {
+    nullable: true,
+  })
+  state: Nullable<string>;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  stateCode: Nullable<string>;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  pinCode: Nullable<string>;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  zipCode: Nullable<string>;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  country: Nullable<string>;
+
+  @Column('varchar', {
+    nullable: true,
+  })
+  countryCode: Nullable<string>;
+
+  @Column('int',{ default: true })
+  isActive: Nullable<number>;
 }

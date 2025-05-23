@@ -39,39 +39,16 @@ export class UserController {
     return usersServicer;
   }
   @UseGuards(JwtAuthGuardValidate)
-  @Get('my')
+  @Get('my/filter')
   async getUsers() {
     const users = await this.userService.getUser();
     if (users) {
       const usersServicer = users.map((user) => {
         const {
           password,
-          streetAddress1,
-          streetAddress2,
-          city,
-          state,
-          stateCode,
-          pinCode,
-          zipCode,
-          country,
-          countryCode,
-          firstName,
-          lastName,
           ...userDetails
         } = user;
 
-        // const address = {
-        //   streetAddress1,
-        //   streetAddress2,
-        //   city,
-        //   state,
-        //   stateCode,
-        //   pinCode,
-        //   zipCode,
-        //   country,
-        //   countryCode,
-        // };
-        // const userDetails = { ...userDetail };
         return userDetails;
       });
       return new Promise((resolve) => {
@@ -83,25 +60,8 @@ export class UserController {
     // return usersServicer;
   }
 
-  // @UseGuards(JwtAuthGuardValidate)
-  // @Get('my')
-  // async getSearchUser() {
-  //   const users = await this.userService.getUser();
-  //   if (users) {
-  //     const usersServicer = users.map((user) => {
-  //       const { password, ...userDetails } = user;
-  //       return userDetails;
-  //     });
-  //     return new Promise((resolve) => {
-  //       setTimeout(() => {
-  //         resolve({ usersServicer, isSuccess: true });
-  //       }, 2000);
-  //     });
-  //   }
-  //   // return usersServicer;
-  // }
-
-  @Post('user')
+  @UseGuards(JwtAuthGuardValidate)
+  @Post('create/user')
   async postUser(@Body() createUserDto: CreateUserDto) {
     const createUser = await this.userService.create(createUserDto);
     if (createUser) {
@@ -114,7 +74,8 @@ export class UserController {
     return;
   }
 
-  @Put(':userId')
+  @UseGuards(JwtAuthGuardValidate)
+  @Put('update/userId=:userId')
   async updateUser(
     @Body() updateUserDto: UpdateUserDto,
     @Param('userId', ParseIntPipe) userId: number,
@@ -131,12 +92,11 @@ export class UserController {
     // return update;
   }
   @UseGuards(JwtAuthGuardValidate)
-  @Get(':userId')
+  @Get('getBy/userId=:userId')
   async getUser(@Param('userId', ParseIntPipe) userId: number) {
     const users = await this.userService.getUserById(userId);
     if (users) {
       const {
-        password,
         streetAddress1,
         streetAddress2,
         city,
@@ -159,11 +119,11 @@ export class UserController {
         country,
         countryCode,
       };
-      const userById = { ...user, address };
+      const employee = { ...user, address };
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           if (user) {
-            resolve({ userById, isSuccess: true });
+            resolve({ employee, isSuccess: true });
           }
           reject({ error });
         }, 2000);
@@ -171,63 +131,12 @@ export class UserController {
     }
   }
 
-  @Put(':userId')
+  @UseGuards(JwtAuthGuardValidate)
+  @Put('removeUser/:userId')
   async deleteUser(@Param('userId', ParseIntPipe) userId: number) {
     return this.userService.softDeleteUser(userId);
   }
-  // @Get('validate/:email')
-  // async validateEmail(@Param('email') email: string): Promise<any> {
-  //   const validate = await this.userService.findUserEmail(email);
-  //   const password = validate?.password || '';
-  //   try {
-  //     return new Promise((resolve) => {
-  //       setTimeout(() => {
-  //         if (!validate) {
-  //           resolve({ isEmailExist: false, isPasswordExist: false });
-  //         }
-  //         if (validate && !password) {
-  //           resolve({ isEmailExist: true, isPasswordExist: false });
-  //         }
-  //         if (validate && password) {
-  //           resolve({ isEmailExist: true, isPasswordExist: true });
-  //         }
-  //       }, 2000);
-  //     });
-  //   } catch (error) {
-  //     return {
-  //       error,
-  //       message: 'something went wrong',
-  //     };
-  //   }
 
-  //   // return { isValidate: true };
-
-  //   // return validate;
-  // }
-
-  // @UseGuards(JwtAuthGuardValidate)
-  // @Put('/changePassword/:email')
-  // async changePassword(
-  //   @Param('email') email: string,
-  //   @Body() changePasswordDto: ChangePasswordDto,
-  //   @Req() req: any,
-  // ) {
-  //   const changeUserPass = await this.userService.changePass(
-  //     changePasswordDto.currentPassword,
-  //     changePasswordDto.newPassword,
-  //     req.user,
-  //     email,
-  //   );
-  //   return new Promise((resolve, reject) => {
-  //     setTimeout(() => {
-  //       if (changeUserPass) {
-  //         resolve(changeUserPass);
-  //       } else {
-  //         reject();
-  //       }
-  //     }, 1000);
-  //   });
-  // }
   @UseGuards(JwtAuthGuardValidate)
   @Get('useraccount/:userId')
   async getUserAccount(@Param('userId', ParseIntPipe) userId: number) {
