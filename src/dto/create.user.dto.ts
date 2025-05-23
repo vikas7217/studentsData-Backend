@@ -5,6 +5,7 @@ import {
   IsOptional,
   IsString,
 } from 'class-validator';
+import { Nullable } from 'src/config/config.service';
 
 export class CreateUserDto {
   @IsOptional()
@@ -12,43 +13,43 @@ export class CreateUserDto {
   id: number;
 
   @IsString()
-  userName: string;
+  userName: Nullable<string>;
 
   @IsString()
-  gender: string;
+  gender: Nullable<string>;
 
   @IsString()
-  roll: string;
+  roll: Nullable<string>;
 
   @IsString()
-  type: string;
+  type: Nullable<string>;
 
   @IsOptional()
   @IsString()
-  password: string;
+  password: Nullable<string>;
 
   @IsString()
-  age: string;
+  age: Nullable<string>;
 
   @IsEmail()
-  email: string;
+  email: Nullable<string>;
 
   @IsString()
-  phoneNumber: string;
+  phoneNumber: Nullable<string>;
 
-  firstName: string;
-  lastName: string;
-  streetAddress1: string;
-  streetAddress2: string;
-  city: string;
-  state: string;
-  stateCode: string;
-  pinCode: string;
-  zipCode: string;
-  country: string;
-  countryCode: string;
+  firstName: Nullable<string>;
+  lastName: Nullable<string>;
+  streetAddress1: Nullable<string>;
+  streetAddress2: Nullable<string>;
+  city: Nullable<string>;
+  state: Nullable<string>;
+  stateCode: Nullable<string>;
+  pinCode: Nullable<string>;
+  zipCode: Nullable<string>;
+  country: Nullable<string>;
+  countryCode: Nullable<string>;
 
   @IsOptional()
   @IsBoolean()
-  isSuccess?: boolean; // Marked as optional
+  isActive?: number; // Marked as optional
 }

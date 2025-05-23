@@ -16,7 +16,7 @@ export class UserProfileService {
         },
       };
     } else {
-      return { data: { ...req }, isSuccess: false, messge: 'woron password' };
+      return { data: { ...req }, isSuccess: false, message: 'wrong password' };
     }
   }
 }

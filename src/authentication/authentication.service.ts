@@ -5,6 +5,7 @@ import { Public_Key } from 'src/auth-guard/public_auth.guard';
 // import { error } from 'console';
 // import { InjectRepository } from '@nestjs/typeorm';
 import { UserService } from 'src/user/user.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class AuthenticationService {
@@ -18,7 +19,9 @@ export class AuthenticationService {
     try {
       const user = await this.userServicer.findUserEmail(email);
 
-      if (user && user.password === password) {
+    const isMatch = await bcrypt.compare(password, user.password);
+
+      if (user && isMatch) {
         return user;
       } else {
         return { isSuccess: false, message: 'Incorrect Password' };
@@ -30,12 +33,12 @@ export class AuthenticationService {
 
   public async singIn(user: any) {
     const payload = { ...user };
-    if (user.isSuccess) {
+    if (user.isActive) {
       return {
         isSuccess: true,
         access_token: await this.jwtServicer.signAsync(payload),
         email: user.email,
-        type: user.type,
+        type: user.userType,
         id: user.id,
         userName: user.userName,
       };

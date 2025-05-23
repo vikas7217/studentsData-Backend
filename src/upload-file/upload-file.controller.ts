@@ -33,6 +33,7 @@ export class UploadFileController {
         return {
           message: 'File processed successfully',
           data: uploadFile,
+          isSuccess: true,
         };
       } else {
         return {
