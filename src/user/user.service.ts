@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateUserDto } from '../dto/create.user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { UserEntity } from './entity/user.entity';
+import { UserEntity } from '../entity/user.entity';
 import { Repository } from 'typeorm';
 // import { ChangePasswordDto } from '../dto/change.password.dto';
 
@@ -24,40 +24,6 @@ export class UserService {
 
     return user;
   }
-
-  // async create(
-  //   createUserDto: CreateUserDto,
-  //   @Query('userId') userId: number,
-  //   @Query('email') email: string,
-  // ) {
-  //   try {
-  //     const isUserIdExist = await this.usersRepository.findOne({
-  //       where: { id: userId },
-  //     });
-  //     const isUserEmailExist = await this.usersRepository.findOne({
-  //       where: { email: email },
-  //     });
-  //
-  //     if (isUserIdExist) {
-  //       return {
-  //         isSuccess: false,
-  //         message: 'user with this User Id has already been Exist',
-  //       };
-  //     }
-  //     if (!isUserEmailExist) {
-  //       return {
-  //         isSuccess: false,
-  //         message: 'user with this User email has already been Exist',
-  //       };
-  //     }
-
-  //     const newUser = this.usersRepository.create(createUserDto);
-  //     return this.usersRepository.save(newUser);
-  //   } catch (error) {
-  //     console.error(error);
-  //   }
-  // }
-
   async create(createUserDto: CreateUserDto) {
     const { id: userId, email: userEmail } = createUserDto;
 
@@ -107,9 +73,6 @@ export class UserService {
       });
 
       return this.usersRepository.save(newUser);
-
-      // const newUser = this.usersRepository.create(createUserDto);
-      // return this.usersRepository.save(newUser);
     } catch (error) {
       console.error(error);
       throw new Error('An error occurred while creating the user');
@@ -148,39 +111,7 @@ export class UserService {
     return { isSuccess: true, message: 'User soft-deleted successfully' };
   }
 
-  findUserEmail(email: string) {
+  public findUserEmail(email: string) {
     return this.usersRepository.findOne({ where: { email, isSuccess: true } });
   }
-
-  // async changePass(
-  //   currentPassword: string,
-  //   newPassword: string,
-  //   user: any,
-  //   email,
-  // ) {
-  //   const findUserEmail = await this.usersRepository.findOne({
-  //     where: { email: email },
-  //   });
-
-  //   // const findUser = await this.usersRepository.findOne({
-  //   //   where: { id: user.id },
-  //   // });
-
-  //   if (!findUserEmail) {
-  //     throw new NotFoundException('User not found');
-  //   }
-
-  //   // const { currentPassword, newPassword } = changePasswordDto;
-
-  //   if (findUserEmail.password !== currentPassword) {
-  //     return {
-  //       message: `Password doesn't match your current password. Try again.`,
-  //     };
-  //   }
-
-  //   findUserEmail.password = newPassword;
-  //   await this.usersRepository.save(findUserEmail);
-
-  //   return { isSuccess: true, message: 'Password changed successfully' };
-  // }
 }

@@ -27,17 +27,17 @@ export class UpdateUserDto {
   phoneNumber: string;
   @IsEmail()
   email: string;
-  firstName:string;
-  lastName:string;
-  streetAddress1:string;
-  streetAddress2:string;
-  city:string;
-  state:string;
-  stateCode:string;
-  pinCode:string;
-  zipCode:string;
-  country:string;
-  countryCode:string;
+  firstName: string;
+  lastName: string;
+  streetAddress1: string;
+  streetAddress2: string;
+  city: string;
+  state: string;
+  stateCode: string;
+  pinCode: string;
+  zipCode: string;
+  country: string;
+  countryCode: string;
   @IsOptional()
   @IsBoolean()
   isSuccess: boolean;
